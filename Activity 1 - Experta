@@ -1,0 +1,419 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "provenance": [],
+      "authorship_tag": "ABX9TyNnJF05R1xq+w17r6bsAdz9",
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "language_info": {
+      "name": "python"
+    }
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/JoshuaEncela14/universe.sql/blob/main/Activity%201%20-%20Experta\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "execution_count": 12,
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "NlWfNXfWULiD",
+        "outputId": "1ef9a22f-49cd-4b86-f1a5-a186acc6af13"
+      },
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Found existing installation: frozendict 1.2\n",
+            "Uninstalling frozendict-1.2:\n",
+            "  Would remove:\n",
+            "    /usr/local/lib/python3.10/dist-packages/frozendict-1.2.dist-info/*\n",
+            "    /usr/local/lib/python3.10/dist-packages/frozendict/*\n",
+            "Proceed (Y/n)? Y\n",
+            "  Successfully uninstalled frozendict-1.2\n"
+          ]
+        }
+      ],
+      "source": [
+        "!pip uninstall frozendict"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install frozendict --use-deprecated=legacy-resolver"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "_XecT9pwUV_f",
+        "outputId": "32480a79-8f04-453d-e77e-a0458a992c64"
+      },
+      "execution_count": 15,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Collecting frozendict\n",
+            "  Using cached frozendict-2.4.0-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (116 kB)\n",
+            "Installing collected packages: frozendict\n",
+            "\u001b[31mERROR: pip's legacy dependency resolver does not consider dependency conflicts when selecting packages. This behaviour is the source of the following dependency conflicts.\n",
+            "experta 1.9.4 requires frozendict==1.2, but you'll have frozendict 2.4.0 which is incompatible.\u001b[0m\u001b[31m\n",
+            "\u001b[0mSuccessfully installed frozendict-2.4.0\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [],
+      "metadata": {
+        "id": "rR5FcIxxYUmy"
+      },
+      "execution_count": null,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "!pip install experta  --use-deprecated=legacy-resolver"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "jrz_ev69UdRp",
+        "outputId": "11cd01b8-0112-4f5b-c303-5de5a90f6ae4"
+      },
+      "execution_count": 10,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Requirement already satisfied: experta in /usr/local/lib/python3.10/dist-packages (1.9.4)\n",
+            "Processing /root/.cache/pip/wheels/ff/80/86/2d516a3c26397f67adaa2c848879d4a6359d90a60546ce4e03/frozendict-1.2-py3-none-any.whl (from experta)\n",
+            "Requirement already satisfied: schema==0.6.7 in /usr/local/lib/python3.10/dist-packages (from experta) (0.6.7)\n",
+            "Installing collected packages: frozendict\n",
+            "\u001b[31mERROR: pip's legacy dependency resolver does not consider dependency conflicts when selecting packages. This behaviour is the source of the following dependency conflicts.\n",
+            "yfinance 0.2.35 requires frozendict>=2.3.4, but you'll have frozendict 1.2 which is incompatible.\u001b[0m\u001b[31m\n",
+            "\u001b[0mSuccessfully installed frozendict-1.2\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from experta import *\n",
+        "import schema"
+      ],
+      "metadata": {
+        "id": "7UfyEYpaUjEX"
+      },
+      "execution_count": 16,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "from random import choice\n",
+        "from experta import *\n",
+        "\n",
+        "class Light(Fact):\n",
+        "    \"\"\"Info about the traffic light.\"\"\"\n",
+        "    color = Field(str, default=\"green\")\n",
+        "\n",
+        "class RobotCrossStreet(KnowledgeEngine):\n",
+        "    @Rule(Light(color='green'))\n",
+        "    def green_light(self):\n",
+        "        print(\"Traffic Light Color: Green - Walk\")\n",
+        "\n",
+        "    @Rule(Light(color='red'))\n",
+        "    def red_light(self):\n",
+        "        print(\"Traffic Light Color: Red - Don't walk\")\n",
+        "\n",
+        "    @Rule(AS.light << Light(color=L('yellow') | L('blinking-yellow')))\n",
+        "    def cautious(self, light):\n",
+        "        print(\"Traffic Light Color:\", light[\"color\"], \"- Be cautious\")\n",
+        "\n",
+        "\n",
+        "TL = RobotCrossStreet()\n",
+        "TL.reset()\n",
+        "random_color = choice([\"green\", \"red\", \"yellow\"])\n",
+        "TL.declare(Light(color=random_color))\n",
+        "\n",
+        "# Run\n",
+        "TL.run()\n"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "p2DmUyYBXmby",
+        "outputId": "a8cbc487-e80c-460f-a208-fe1e92ad3da7"
+      },
+      "execution_count": 36,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Traffic Light Color: Green - Walk\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "TL = RobotCrossStreet()\n",
+        "TL.reset()\n",
+        "random_color = choice([\"green\", \"red\", \"yellow\"])\n",
+        "TL.declare(Light(color=random_color))\n",
+        "\n",
+        "# Run\n",
+        "TL.run()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "LzPtqI71YWDe",
+        "outputId": "e8ad38f2-a549-497e-c50a-07c41dcabdeb"
+      },
+      "execution_count": 39,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Traffic Light Color: Red - Don't walk\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "TL = RobotCrossStreet()\n",
+        "TL.reset()\n",
+        "random_color = choice([\"green\", \"red\", \"yellow\"])\n",
+        "TL.declare(Light(color=random_color))\n",
+        "\n",
+        "# Run\n",
+        "TL.run()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "XW-UTUA2YbIy",
+        "outputId": "d207fd41-7c73-4760-c43c-3a0d7906de96"
+      },
+      "execution_count": 40,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Traffic Light Color: Red - Don't walk\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "TL = RobotCrossStreet()\n",
+        "TL.reset()\n",
+        "random_color = choice([\"green\", \"red\", \"yellow\"])\n",
+        "TL.declare(Light(color=random_color))\n",
+        "\n",
+        "# Run\n",
+        "TL.run()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "wCEk83MyYcvn",
+        "outputId": "00ab6c54-9394-4cb9-f517-56cfd4e0145a"
+      },
+      "execution_count": 41,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Traffic Light Color: Red - Don't walk\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "TL = RobotCrossStreet()\n",
+        "TL.reset()\n",
+        "random_color = choice([\"green\", \"red\", \"yellow\"])\n",
+        "TL.declare(Light(color=random_color))\n",
+        "\n",
+        "# Run\n",
+        "TL.run()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "gWo7dI2uYeJV",
+        "outputId": "f1db489f-24b0-43c0-fdfb-b82b4d32194d"
+      },
+      "execution_count": 42,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Traffic Light Color: Red - Don't walk\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "TL = RobotCrossStreet()\n",
+        "TL.reset()\n",
+        "random_color = choice([\"green\", \"red\", \"yellow\"])\n",
+        "TL.declare(Light(color=random_color))\n",
+        "\n",
+        "# Run\n",
+        "TL.run()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "SvLHFXZVYfe9",
+        "outputId": "fb38996a-725d-4a48-91d9-850293ff55e8"
+      },
+      "execution_count": 43,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Traffic Light Color: Red - Don't walk\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "TL = RobotCrossStreet()\n",
+        "TL.reset()\n",
+        "random_color = choice([\"green\", \"red\", \"yellow\"])\n",
+        "TL.declare(Light(color=random_color))\n",
+        "\n",
+        "# Run\n",
+        "TL.run()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "uPy86PF4Ygnx",
+        "outputId": "36739a3f-ebc1-496a-87b2-7b5e2348325e"
+      },
+      "execution_count": 44,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Traffic Light Color: Green - Walk\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "TL = RobotCrossStreet()\n",
+        "TL.reset()\n",
+        "random_color = choice([\"green\", \"red\", \"yellow\"])\n",
+        "TL.declare(Light(color=random_color))\n",
+        "\n",
+        "# Run\n",
+        "TL.run()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "663z3BWoYjIv",
+        "outputId": "10c9e716-88ad-4b9c-b381-88b5ed435574"
+      },
+      "execution_count": 45,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Traffic Light Color: Green - Walk\n"
+          ]
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "source": [
+        "TL = RobotCrossStreet()\n",
+        "TL.reset()\n",
+        "random_color = choice([\"green\", \"red\", \"yellow\"])\n",
+        "TL.declare(Light(color=random_color))\n",
+        "\n",
+        "# Run\n",
+        "TL.run()"
+      ],
+      "metadata": {
+        "colab": {
+          "base_uri": "https://localhost:8080/"
+        },
+        "id": "q2-VxbKIYjWA",
+        "outputId": "e7754593-2aa9-4af5-c872-a6996cbf5693"
+      },
+      "execution_count": 46,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "name": "stdout",
+          "text": [
+            "Traffic Light Color: Red - Don't walk\n"
+          ]
+        }
+      ]
+    }
+  ]
+}
